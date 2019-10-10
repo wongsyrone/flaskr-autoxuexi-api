@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+'''
+@project: flaskr
+@file: model.py
+@author: kessil
+@contact: https://github.com/kessil/flaskr/
+@time: 2019-09-09(星期一) 17:16
+@Copyright © 2019. All rights reserved.
+'''
+from werkzeug.security import generate_password_hash, check_password_hash
+from . import db
+
+class Bank(db.Model):
+    __tabname__ = 'banks'
+    ''' | id | category | content | options | answer | excludes | description |
+        id 序号
+        category 类别
+        ctontent 题干
+        options 选项
+        answer 答案
+        excludes 排除项
+        descriptions 说明
+    '''
+    id = db.Column(db.Integer, primary_key=True)
+    category = db.Column(db.String(16), index=True)
+    content = db.Column(db.Text, nullable=False)
+    options = db.Column(db.Text)
+    answer = db.Column(db.String(128))
+    excludes = db.Column(db.String(16))
+    description = db.Column(db.Text)
+
+    def __init__(self, **kwargs):
+        super(Bank, self).__init__(**kwargs)
+
+    def __repr__(self):
+        return f'<object Bank {self.id}>'
+
+    def __str__(self):
+        return f'{self.content}'
+
+    def to_json(self):
+        json_bank = {
+            'id': self.id,
+            'category': self.category,
+            'content': self.content,
+            'options': self.options.split('|'),
+            'answer': self.answer,
+            'excludes': self.excludes,
+            'description': self.description
+        }
+        return json_bank
+
+    @staticmethod
+    def from_json(json_bank):
+        print(type(json_bank['options']), json_bank['options'])
+        return Bank(            
+            category = json_bank.get('category'),
+            content = json_bank.get('content'),
+            options = '|'.join(json_bank.get('options')) or '',
+            answer = json_bank.get('answer') or '',
+            excludes = json_bank.get('excludes') or '',
+            description = json_bank.get('description') or ''
+        )
