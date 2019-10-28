@@ -39,12 +39,13 @@ class QuestionList(Resource):
         args = parser.parse_args()
         category = args['category']
         content = args['content']
-        print(f'category {category}\tcontent {content}')
+        # category, content = request.json['category'], request.json['content']
+        # print(f'category {category}\tcontent {content}')
         if category:
             category_list = category.split(' ')
             if content:
                 content_like = re.sub(r'\s+|(%20)', '%', content)
-                print(content_like)
+                # print(content_like)
                 res = Bank.query.filter(Bank.category.in_(category_list)).filter(Bank.content.like(content_like)).all()
             else:
                 res = Bank.query.filter(Bank.category.in_(category_list)).all()
@@ -56,8 +57,10 @@ class QuestionList(Resource):
             return [item.to_json() for item in res]
 
     def post(self):
+        # print(request.json)
         question = Bank.from_json(request.json)
         content_like = re.sub(r'\s+|(%20)', '%', question.content)
+        # print(str(question))
         if Bank.query.filter_by(category=question.category).filter(Bank.content.like(content_like)).first():
             print(f'该题已存在，无需添加')
             abort(400, message=f'已拒绝 <Bank {question.content}> 重复添加！')

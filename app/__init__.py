@@ -41,3 +41,4 @@ def create_app(config_name):
 
     # 返回实例
     return app
+
