@@ -37,7 +37,7 @@ class Bank(db.Model):
         return f'<object Bank {self.id}>'
 
     def __str__(self):
-        return f'{self.content}'
+        return f'{self.id=}\n{self.category=}\n{self.content=}\n{self.options=}\n{self.answer=}\n{self.excludes=}'
 
     def to_json(self):
         json_bank = {

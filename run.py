@@ -21,12 +21,15 @@ def get_bank():
         'User-Agent': "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36"
     }
     data = {
-        "category": "挑战题",
-        "content": "提出全面深化改革总目标的会议是        "
+        "category": "挑战题"
     }
     res = requests.get(url, headers=headers, params=data)
     # print(res)
-    print(json.loads(res.text))
+    # print(json.loads(res.text))
+    banks = [x for x in json.loads(res.text) if len(x["excludes"])>1]
+    for bank in banks:
+        print(bank["content"], bank["excludes"], '\n')
+
 
 if __name__ == "__main__":
     # post_banks()
