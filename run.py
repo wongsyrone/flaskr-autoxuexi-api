@@ -1,3 +1,14 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+'''
+@project: flaskr
+@file: run.py
+@author: kessil
+@contact: https://github.com/kessil/flaskr/
+@time: 2019-09-09(星期一) 16:54
+@Copyright © 2019. All rights reserved.
+'''
+
 from pathlib import Path
 import json
 import requests

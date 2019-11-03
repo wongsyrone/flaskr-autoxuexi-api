@@ -1,3 +1,13 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+'''
+@project: flaskr
+@file: banks.py
+@author: kessil
+@contact: https://github.com/kessil/flaskr/
+@time: 2019-09-09(星期一) 16:54
+@Copyright © 2019. All rights reserved.
+'''
 import re
 from flask import request
 from flask_restful import Resource, abort, reqparse
@@ -33,37 +43,28 @@ class Question(Resource):
         de.session.commit()
         return '', 204
 
-
-parser = reqparse.RequestParser()
-parser.add_argument('category', type=str)
-parser.add_argument('content', type=str)
-
 class QuestionList(Resource):
     def get(self):
-        args = parser.parse_args()
-        category = args['category']
-        content = args['content']
-        options = args['options']
-        # category, content = request.json['category'], request.json['content']
-        # print(f'category {category}\tcontent {content}')
-        if category:
-            category_list = category.split(' ')
-            if content:
-                content_like = re.sub(r'\s+|(%20)', '%', content)
+        question = Bank.from_json(request.json)
+        if question and question.category:
+            category_list = question.category.split(' ')
+            if question and question.content:
+                content_like = re.sub(r'\s+|(%20)', '%', question.content)
                 # print(content_like)
-                res = Bank.query.filter(Bank.category.in_(category_list)).filter(Bank.content.like(content_like)).filter_by(options=question.options).all()
+                res = Bank.query.filter(Bank.category.in_(category_list)).filter(Bank.content.like(content_like)).all()
+                if len(res) > 1:
+                    res = [x for x in res if question and x.options == question.options]
             else:
                 res = Bank.query.filter(Bank.category.in_(category_list)).all()
         else:
             res =  Bank.query.all()
-        # for t in res:
-        #     print(str(t))
+
         if 0 == len(res):
-            abort(404, message=f'<Question {content}> not EXIST!')
-        elif 1 == len(res):            
-            return res[0].to_json()
+            abort(404, message='<Question %s> not EXIST!'%content)
+        elif 1 == len(res):
+            return res[0].to_json(), 200
         else:
-            return [item.to_json() for item in res]
+            return [item.to_json() for item in res], 200
 
     def post(self):
         # print(request.json)
@@ -74,7 +75,7 @@ class QuestionList(Resource):
             print('该题已存在，无需添加')
             abort(400, message='已拒绝 <Bank %s> 重复添加!'%(question.content))
         else:
-            # print(question)
+            print('添加记录：%s\n%s\t[%s]\n'%(question.content, question.options, question.answer))
             db.session.add(question)
             db.session.commit()
             return question.to_json(), 201
@@ -86,7 +87,7 @@ class QuestionList(Resource):
         # print(str(question))
         bank = Bank.query.filter_by(category=question.category).filter(Bank.content.like(content_like)).first()
         if bank:
-            print(f'更新题库...')
+            print('更新题库...')
             print("answer: %s = %s"%(bank.answer, question.answer))
             print("excludes: %s += %s"%(bank.excludes, question.excludes))
             # print(f'{bank.excludes} += {question["excludes"]}')
@@ -98,7 +99,7 @@ class QuestionList(Resource):
             db.session.commit()
             return bank.to_json(), 200
         else:
-            # print(question)
+            print('新增题库...')
             db.session.add(question)
             db.session.commit()
             return question.to_json(), 201

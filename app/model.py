@@ -34,10 +34,14 @@ class Bank(db.Model):
         super(Bank, self).__init__(**kwargs)
 
     def __repr__(self):
-        return f'<object Bank {self.id}>'
+        return '<object Bank %d>'%self.id
 
     def __str__(self):
-        return f'{self.id=}\n{self.category=}\n{self.content=}\n{self.options=}\n{self.answer=}\n{self.excludes=}'
+        # python 3.0+
+        return "%s\n%s\n%s\n"%(self.content, self.options, self.answer)
+
+        # python 3.8+
+        # return f'{self.id=}\n{self.category=}\n{self.content=}\n{self.options=}\n{self.answer=}\n{self.excludes=}'
 
     def to_json(self):
         json_bank = {
@@ -54,6 +58,8 @@ class Bank(db.Model):
     @staticmethod
     def from_json(json_bank):
         # print(type(json_bank['options']), json_bank['options'])
+        if not json_bank:
+            return None
         return Bank(            
             category = json_bank.get('category'),
             content = json_bank.get('content'),
