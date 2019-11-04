@@ -37,7 +37,8 @@ def get_bank():
     res = requests.get(url, headers=headers, params=data)
     # print(res)
     # print(json.loads(res.text))
-    banks = [x for x in json.loads(res.text) if len(x["excludes"])>1]
+    # banks = [x for x in json.loads(res.text) if len(x["excludes"])>1]
+    banks = [x for x in json.loads(res.text) if not x["answer"]]
     for bank in banks:
         print(bank["content"], bank["excludes"], '\n')
 

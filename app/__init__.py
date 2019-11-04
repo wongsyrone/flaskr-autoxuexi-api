@@ -34,7 +34,7 @@ def create_app(config_name):
     db.init_app(app)
 
     # 注册蓝图
-    blueprints = ['app.api:api_bp']
+    blueprints = ['app.api:api_bp', 'app.main:main_bp']
     for bp_name in blueprints:
         bp = import_string(bp_name)
         app.register_blueprint(bp)
