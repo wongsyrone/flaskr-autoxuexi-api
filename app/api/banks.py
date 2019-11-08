@@ -60,7 +60,7 @@ class QuestionList(Resource):
             res =  Bank.query.all()
 
         if 0 == len(res):
-            abort(404, message='<Question %s> not EXIST!'%content)
+            abort(404, message='<Question %s> not EXIST!'%question.content)
         elif 1 == len(res):
             return res[0].to_json(), 200
         else:

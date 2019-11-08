@@ -15,7 +15,7 @@
         <v-container><h1>挑战答题 题库</h1>
           <ol>
             {% for bank in banks %}
-            <li style="margin-bottom: 1em;">【{{ bank.answer }}】{{ bank.content }} </li>
+            <li style="margin-bottom: 1em;">【<b style="color: green;">{{ bank.answer }}</b>】{{ bank.content }} </li>
             {% endfor %}
           </ol>
         </v-container>

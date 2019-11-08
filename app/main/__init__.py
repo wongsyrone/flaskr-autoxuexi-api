@@ -8,5 +8,8 @@ main_bp = Blueprint('main', __name__, url_prefix='/')
 
 @main_bp.route('/')
 def index():
-    data = [x for x in Bank.query.all() if x.answer]
+    import re
+    data = [x for x in Bank.query.all() if "挑战题" == x.category and x.answer]
+    for item in data:
+        item.content = re.sub(r'(\s\s+)|((\(|（)\s*(\)|）))|(【\s*】)', "____", item.content)
     return render_template('index.html', banks=data)
