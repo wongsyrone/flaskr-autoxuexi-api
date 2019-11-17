@@ -1,21 +1,39 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 </head>
+
 <body>
   <div id="app">
     <v-app>
-      
+
       <v-content>
         <!-- 本来还想用vuetify搞漂亮点，算了将就吧 就这样了。 -->
-        <v-container><h1>挑战答题 题库</h1>
+        <v-container>
+          <h1>挑战答题 题库</h1>
           <ol>
             {% for bank in banks %}
-            <li style="margin-bottom: 1em;">【<b style="color: green;">{{ bank.answer }}</b>】{{ bank.content }} </li>
+            <li>
+              <div style="margin-bottom: 1em;">
+                【<b style="color: green;">{{ bank.answer }}</b> <del style="color: red;">{{ bank.excludes }}</del>】{{ bank.content }}
+                {% if bank.category != "填空题" %}<div>
+                  <!-- <ul>
+                    {% for option in bank.options %}
+                    <li>{{ option }}</li>
+                    {% endfor %}
+                  </ul> -->
+                  {% for option in bank.options %}
+                  <span style="background-color: orangered;;">{{ option }}</span>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              </div>
+            </li>
             {% endfor %}
           </ol>
         </v-container>
@@ -33,4 +51,5 @@
     })
   </script>
 </body>
+
 </html>

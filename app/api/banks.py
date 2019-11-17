@@ -49,7 +49,7 @@ class QuestionList(Resource):
         if question and question.category:
             category_list = question.category.split(' ')
             if question and question.content:
-                content_like = re.sub(r'\s+|(%20)', '%', question.content)
+                content_like = re.sub(r'(\s+)|(%20)|(（出题单位：.*）)', '%', question.content)
                 # print(content_like)
                 res = Bank.query.filter(Bank.category.in_(category_list)).filter(Bank.content.like(content_like)).all()
                 if len(res) > 1:
