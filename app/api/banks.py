@@ -75,7 +75,7 @@ class QuestionList(Resource):
             print('该题已存在，无需添加')
             abort(400, message='已拒绝 <Bank %s> 重复添加!'%(question.content))
         else:
-            print('添加记录：%s\n%s\t[%s]\n'%(question.content, question.options, question.answer))
+            print('添加记录：%s\n%s\t[%s]\t'%(question.content, question.options, question.answer))
             db.session.add(question)
             db.session.commit()
             return question.to_json(), 201
@@ -83,7 +83,7 @@ class QuestionList(Resource):
     def put(self):
         # print(request.json)
         question = Bank.from_json(request.json)
-        content_like = re.sub(r'\s+|(%20)', '%', question.content)
+        content_like = re.sub(r'\s+|(%20)|(（出题单位：.*）)', '%', question.content)
         # print(str(question))
         bank = Bank.query.filter_by(category=question.category).filter(Bank.content.like(content_like)).first()
         if bank:

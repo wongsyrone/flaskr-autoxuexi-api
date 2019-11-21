@@ -60,10 +60,15 @@ class Bank(db.Model):
         # print(type(json_bank['options']), json_bank['options'])
         if not json_bank:
             return None
+        if isinstance(json_bank.get('options'), list) and len(json_bank.get('options')) > 0:
+            temp = '|'.join(json_bank.get('options'))
+        else:
+            temp = ""
+
         return Bank(            
             category = json_bank.get('category'),
             content = json_bank.get('content'),
-            options = '|'.join(json_bank.get('options')) or '',
+            options =  temp,
             answer = json_bank.get('answer') or '',
             excludes = json_bank.get('excludes') or '',
             notes = json_bank.get('notes') or ''
