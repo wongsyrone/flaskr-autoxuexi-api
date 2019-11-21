@@ -20,13 +20,15 @@
             {% for bank in banks %}
             <li>
               <div style="margin-bottom: 1em;">
-                
-                【<b style="color: green;">{{ bank.answer }}</b> <del style="color: red;">{{ bank.excludes }}</del>】【<i style="color: #FF3366;">{{ bank.category }}</i>】{{ bank.content }}
-                {% if bank.category != "填空题" %}<div>
+
+                【<b style="color: green;">{{ bank.answer }}</b> <del style="color: red;">{{ bank.excludes }}</del>】【<i
+                  style="color: #FF3366;">{{ bank.category }}</i>】{{ bank.content }}
+                {% if bank.category != "填空题" %}
+                <ul>
                   {% for option in bank.options %}
-                  <span style="background-color: purple;;">{{ option }}</span>
+                    <li>{{ option }}</li>
                   {% endfor %}
-                </div>
+                </ul>
                 {% endif %}
               </div>
             </li>

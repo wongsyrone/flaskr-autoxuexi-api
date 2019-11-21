@@ -69,7 +69,7 @@ class QuestionList(Resource):
     def post(self):
         # print(request.json)
         question = Bank.from_json(request.json)
-        content_like = re.sub(r'\s+|(%20)', '%', question.content)
+        content_like = re.sub(r'\s+|(%20)|(（出题单位：.*）)', '%', question.content)
         # print(str(question))
         if Bank.query.filter_by(category=question.category).filter(Bank.content.like(content_like)).filter_by(options=question.options).first():
             print('该题已存在，无需添加')
