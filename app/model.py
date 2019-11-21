@@ -8,8 +8,11 @@
 @time: 2019-09-09(星期一) 17:16
 @Copyright © 2019. All rights reserved.
 '''
+import json
+import re
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
+from pathlib import Path
 
 class Bank(db.Model):
     __tabname__ = 'banks'
@@ -73,3 +76,30 @@ class Bank(db.Model):
             excludes = json_bank.get('excludes') or '',
             notes = json_bank.get('notes') or ''
         )
+
+def dump():
+    path = Path('./data-output.json')
+    data = Bank.query.all()
+    res = [item.to_json() for item in data]
+    with path.open(mode='w', encoding='utf-8') as fp:
+        json.dump(res, fp, ensure_ascii=False)
+
+    print('dump success')
+
+
+
+def load():
+    path = Path('./data-input.json')
+    with path.open(mode='r', encoding='utf-8') as fp:
+        data = json.load(fp)
+    for item in data:
+        question = Bank.from_json(item)
+        content_like = re.sub(r'\s+|(%20)|(（出题单位：.*）)', '%', question.content)
+        if Bank.query.filter_by(category=question.category).filter(Bank.content.like(content_like)).filter_by(options=question.options).first():
+            print('该题已存在，无需添加')
+        else:
+            db.session.add(question)
+            db.session.commit()
+            print('添加记录：%s\t[%s]\t[%s]'%(question.content, question.options, question.answer))
+
+
