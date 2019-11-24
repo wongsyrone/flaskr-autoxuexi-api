@@ -11,7 +11,7 @@
 import os
 from app import create_app, db
 from app.model import Bank
-from app.model import dump, load
+from app.model import dump, load, update
 from flask_migrate import Migrate
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -19,7 +19,7 @@ migrate = Migrate(app, db)
 
 @app.shell_context_processor
 def make_shell_context():
-    return dict(db=db, Bank=Bank, dump=dump, load=load)
+    return dict(db=db, Bank=Bank, dump=dump, load=load, update=update)
 
 
 if __name__ == "__main__":

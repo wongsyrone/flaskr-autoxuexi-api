@@ -41,7 +41,7 @@ class Bank(db.Model):
 
     def __str__(self):
         # python 3.0+
-        return "%s\n%s\n%s\n"%(self.content, self.options, self.answer)
+        return "%s\tanswer = %s\texcludes = %s\t"%(self.content, self.answer, self.excludes)
 
         # python 3.8+
         # return f'{self.id=}\n{self.category=}\n{self.content=}\n{self.options=}\n{self.answer=}\n{self.excludes=}'
@@ -102,4 +102,15 @@ def load():
             db.session.commit()
             print('添加记录：%s\t[%s]\t[%s]'%(question.content, question.options, question.answer))
 
-
+def update(id:int, answer:str="", excludes:str=""):
+    if not id or not isinstance(id, int):
+        print('<int> required')
+        return 
+    bank = Bank.query.filter_by(id=id).one_or_none()
+    if bank:
+        bank.answer = answer
+        bank.excludes = excludes
+        db.session.commit()
+        print("更新成功", str(bank))
+    else:
+        print('编号不存在')

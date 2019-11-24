@@ -50,10 +50,15 @@ class QuestionList(Resource):
             category_list = question.category.split(' ')
             if question and question.content:
                 content_like = re.sub(r'(\s+)|(%20)|(（出题单位：.*）)', '%', question.content)
+                if content_like[-1] == '%':
+                    pass
+                else:
+                    content_like += '%'
                 # print(content_like)
-                res = Bank.query.filter(Bank.category.in_(category_list)).filter(Bank.content.like(content_like)).all()
-                if len(res) > 1:
-                    res = [x for x in res if question and x.options == question.options]
+                
+                res = Bank.query.filter(Bank.category.in_(category_list)) \
+                                .filter(Bank.content.like(content_like)) \
+                                .filter(Bank.options==question.options).all()
             else:
                 res = Bank.query.filter(Bank.category.in_(category_list)).all()
         else:
@@ -71,7 +76,9 @@ class QuestionList(Resource):
         question = Bank.from_json(request.json)
         content_like = re.sub(r'\s+|(%20)|(（出题单位：.*）)', '%', question.content)
         # print(str(question))
-        if Bank.query.filter_by(category=question.category).filter(Bank.content.like(content_like)).filter_by(options=question.options).first():
+        if Bank.query.filter_by(category=question.category) \
+                    .filter(Bank.content.like(content_like)) \
+                    .filter_by(options=question.options).first():
             print('该题已存在，无需添加')
             abort(400, message='已拒绝 <Bank %s> 重复添加!'%(question.content))
         else:
@@ -85,11 +92,17 @@ class QuestionList(Resource):
         question = Bank.from_json(request.json)
         content_like = re.sub(r'\s+|(%20)|(（出题单位：.*）)', '%', question.content)
         # print(str(question))
-        bank = Bank.query.filter_by(category=question.category).filter(Bank.content.like(content_like)).first()
+        bank = Bank.query.filter_by(category=question.category) \
+                    .filter(Bank.content.like(content_like)) \
+                    .filter_by(options=question.options).first()
         if bank:
-            print('更新题库...')
-            print("answer: %s = %s"%(bank.answer, question.answer))
-            print("excludes: %s += %s"%(bank.excludes, question.excludes))
+            if bank.answer and bank.answer == question.answer:
+                print('本题已保存正确答案, 跳过更新')
+                return bank.to_json(), 404
+            print('更新题库 [answer = %s] [excludes: %s += %s]' \
+                %(question.answer, bank.excludes, question.excludes))
+            # print("answer: %s = %s"%(bank.answer, question.answer))
+            # print("excludes: %s += %s"%(bank.excludes, question.excludes))
             # print(f'{bank.excludes} += {question["excludes"]}')
             # prrnt(f'{bank.answer} = {question["answer"]}')
             # abort(400, message=f'已拒绝 <Bank {question.content}> 重复添加！')
@@ -99,7 +112,8 @@ class QuestionList(Resource):
             db.session.commit()
             return bank.to_json(), 200
         else:
-            print('新增题库...')
+            print('新增题库 %s [answer: %s]\t[excludes: %s]' \
+                %(question.content, question.answer, question.excludes))
             db.session.add(question)
             db.session.commit()
             return question.to_json(), 201

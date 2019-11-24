@@ -10,7 +10,7 @@ main_bp = Blueprint('main', __name__, url_prefix='/')
 def index():
     import re
 
-    data = [x for x in Bank.query.all()] # if "挑战题" == x.category]
+    data = [x for x in Bank.query.all() if "" == x.answer]
     for item in data:
         item.content = re.sub(r'(\s\s+)|((\(|（)\s*(\)|）))|(【\s*】)', "____", item.content)
         item.options = item.options.split('|')
