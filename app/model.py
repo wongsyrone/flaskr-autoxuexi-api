@@ -94,6 +94,8 @@ def load():
         data = json.load(fp)
     for item in data:
         question = Bank.from_json(item)
+        if question.category != "填空题":
+            continue
         content_like = re.sub(r'\s+|(%20)|(（出题单位：.*）)', '%', question.content)
         if Bank.query.filter_by(category=question.category).filter(Bank.content.like(content_like)).filter_by(options=question.options).first():
             print('该题已存在，无需添加')

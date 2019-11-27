@@ -13,16 +13,17 @@
     <v-app>
 
       <v-content>
-        <!-- 本来还想用vuetify搞漂亮点，算了将就吧 就这样了。 -->
+        <!-- 本来还想用vuetify搞漂亮点，算了将就吧 实在没有兴趣搞界面 就这样了。 -->
         <v-container>
-          <h1>挑战答题 题库</h1>
+          <h1>挑战答题 (共 {{ length }} 题)</h1>
           <ol>
             {% for bank in banks %}
             <li>
               <div style="margin-bottom: 1em;">
 
                 【<b style="color: green;">{{ bank.answer }}</b> <del style="color: red;">{{ bank.excludes }}</del>】
-                【<i style="color: #FF3366;">{{ bank.category }}</i><sup>{{ bank.id }}</sup> 】{{ bank.content }}
+                <!-- 【<i style="color: #FF3366;">{{ bank.category }}</i><sup>{{ bank.id }}</sup> 】 -->
+                {{ bank.content }}
                 {% if bank.category != "填空题" %}
                 <ul>
                   {% for option in bank.options %}
