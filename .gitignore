@@ -105,4 +105,4 @@ venv.bak/
 
 test.py
 data-*.json
-data-bak.sqlite
+data-bak*.sqlite

@@ -92,11 +92,20 @@ def load():
     path = Path('./data-input.json')
     with path.open(mode='r', encoding='utf-8') as fp:
         data = json.load(fp)
-    for item in data:
-        question = Bank.from_json(item)
-        if question.category != "填空题":
-            continue
+    # data = sorted(data, key=lambda x:x["category"])
+    for tag in ["单选题", "多选题", "填空题"]:
+        for item in data:
+            question = Bank.from_json(item)
+            if tag == question.category:
+                _load(question)
+            else:
+                continue
+        else:
+            print("%s load completed"%tag)
+
+def _load(question):
         content_like = re.sub(r'\s+|(%20)|(（出题单位：.*）)', '%', question.content)
+        content_like += "" if content_like[-1] == '%' else "%"
         if Bank.query.filter_by(category=question.category).filter(Bank.content.like(content_like)).filter_by(options=question.options).first():
             print('该题已存在，无需添加')
         else:
