@@ -18,3 +18,7 @@ def index():
         # print(item.options)
 
     return render_template('index.html', banks=data, length=length_of_bank)
+
+@main_bp.route('/downloads')
+def downloads():
+    return render_template('downloads.html')
