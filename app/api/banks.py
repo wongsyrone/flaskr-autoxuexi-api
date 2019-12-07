@@ -74,11 +74,13 @@ class QuestionList(Resource):
         content_like = re.sub(r'\s+|(%20)|(（出题单位：.*）)', '%', question.content)
         content_like += "" if content_like[-1] == '%' else "%"
         # print(str(question))
-        if Bank.query.filter_by(category=question.category) \
+        bank =  Bank.query.filter_by(category=question.category) \
                     .filter(Bank.content.like(content_like)) \
-                    .filter_by(options=question.options).first():
+                    .filter_by(options=question.options).first()
+        if bank:
             print('该题已存在，无需添加')
-            abort(400, message='已拒绝 <Bank %s> 重复添加!'%(question.content))
+            # abort(400, message='已拒绝 <Bank %s> 重复添加!'%(question.content))
+            return bank.to_json(), 200
         else:
             print('添加记录：%s\n%s\t[%s]\t'%(question.content, question.options, question.answer))
             db.session.add(question)
