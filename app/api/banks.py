@@ -80,23 +80,30 @@ class QuestionList(Resource):
 
         if not question.answer:
             # 查询需求
-            if bank and bank.answer:
-                return bank.to_json(), 200
+            if bank:
+                print("查询成功")
+                return bank.to_json(), 200                
             else:
+                print("查询失败")
                 return None, 404
         else:
             # 修改需求
-            if bank and bank.answer:
-                return None, 404
-            elif not bank:
-                db.session.add(question)
-                db.sessino.commit()
-                return None, 201
+            if bank：
+                if bank.answer:
+                    print("无需添加")
+                    return None, 404
+                else:
+                    print("更新题目")
+                    bank.answer = question.answer
+                    bank.exclude += question.excludes
+                    db.session.commit()
+                    return None, 201
             else:
-                bank.answer = question.answer
-                bank.exclude += question.excludes
+                print("添加题目")
+                db.session.add(question)
                 db.session.commit()
                 return None, 201
+
 
     def put(self):
         # print(request.json)
