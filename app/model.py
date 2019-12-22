@@ -113,14 +113,18 @@ def _load(question):
             db.session.commit()
             print('添加记录：%s\t[%s]\t[%s]'%(question.content, question.options, question.answer))
 
-def update(id:int, answer:str="", excludes:str=""):
+def update(id:int,category="", answer:str="", excludes:str=""):
     if not id or not isinstance(id, int):
         print('<int> required')
         return 
     bank = Bank.query.filter_by(id=id).one_or_none()
     if bank:
-        bank.answer = answer
-        bank.excludes = excludes
+        if category:
+            bank.category = category
+        if answer:
+            bank.answer = answer
+        if excludes:
+            bank.excludes = excludes
         db.session.commit()
         print("更新成功", str(bank))
     else:
