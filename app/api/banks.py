@@ -77,6 +77,9 @@ class QuestionList(Resource):
         bank =  Bank.query.filter_by(category=question.category) \
                     .filter(Bank.content.like(content_like)) \
                     .filter_by(options=question.options).first()
+        if not question:
+            print("查询个鬼")
+            return None, 404
 
         if not question.answer:
             # 查询需求
