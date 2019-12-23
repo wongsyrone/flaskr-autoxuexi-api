@@ -21,4 +21,5 @@ def index():
 
 @main_bp.route('/downloads')
 def downloads():
-    return render_template('downloads.html')
+    return "云主机本就花钱买的低配版，何况压力增大，干这种吃力不讨好的事真的很蠢，后期将考虑接受捐赠"
+

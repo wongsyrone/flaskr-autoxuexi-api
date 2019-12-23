@@ -62,10 +62,17 @@ class Bank(db.Model):
     def from_json(json_bank):
         # print(type(json_bank['options']), json_bank['options'])
         if not json_bank:
+            # 不接受空题
+            return None
+        if "" == json_bank.get('category') or "" == json_bank.get('content'):
+            # 不接受没有类型和题干的题目
             return None
         if isinstance(json_bank.get('options'), list) and len(json_bank.get('options')) > 0:
             temp = '|'.join(json_bank.get('options'))
         else:
+            if "单选题" == json_bank.get('category') or "多选题" == json_bank.get('category'):
+                # 不接受没有选项的单选题和多选题
+                return None
             temp = ""
 
         return Bank(            

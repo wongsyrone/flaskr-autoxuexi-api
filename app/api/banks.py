@@ -88,7 +88,7 @@ class QuestionList(Resource):
                 return None, 404
         else:
             # 修改需求
-            if bank：
+            if bank:
                 if bank.answer:
                     print("无需添加")
                     return None, 404
